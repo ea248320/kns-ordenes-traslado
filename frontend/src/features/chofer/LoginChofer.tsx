@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import type { SesionChofer } from '../../auth/useAuth'
+import { LOGO_URL } from '../../lib/assets'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -41,7 +42,7 @@ export default function LoginChofer({ onLogin, onVolver }: Props) {
   return (
     <div className="pantalla-centrada">
       <form className="tarjeta formulario-login" onSubmit={handleSubmit}>
-        <img src="/logo.png" alt="KNS Transportes" className="logo-login" />
+        <img src={LOGO_URL} alt="KNS Transportes" className="logo-login" />
         <h2>Ingreso Chofer</h2>
         <label>
           RUT

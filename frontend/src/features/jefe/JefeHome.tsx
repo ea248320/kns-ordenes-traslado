@@ -14,6 +14,7 @@ import TablaTraslados from './TablaTraslados'
 import CatalogoClientes from './clientes/CatalogoClientes'
 import CatalogoFlota from './flota/CatalogoFlota'
 import Dashboard from './dashboard/Dashboard'
+import { LOGO_URL } from '../../lib/assets'
 
 interface Props {
   onLogout: () => void
@@ -60,7 +61,7 @@ export default function JefeHome({ onLogout }: Props) {
     <div className="contenedor contenedor-ancho">
       <header className="barra-superior">
         <div>
-          <img src="/logo.png" alt="KNS Transportes" className="logo-barra" />
+          <img src={LOGO_URL} alt="KNS Transportes" className="logo-barra" />
           <strong>Panel del Jefe</strong>
         </div>
         <button type="button" className="boton-secundario" onClick={onLogout}>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import FormularioTraslado from './FormularioTraslado'
 import HistorialChofer from './HistorialChofer'
 import { syncCompleto } from '../../lib/sync'
+import { LOGO_URL } from '../../lib/assets'
 import type { SesionChofer } from '../../auth/useAuth'
 
 interface Props {
@@ -35,7 +36,7 @@ export default function ChoferHome({ sesion, onLogout }: Props) {
     <div className="contenedor">
       <header className="barra-superior">
         <div>
-          <img src="/logo.png" alt="KNS Transportes" className="logo-barra" />
+          <img src={LOGO_URL} alt="KNS Transportes" className="logo-barra" />
           <span className={online ? 'chip chip-ok' : 'chip chip-pendiente'}>
             {online ? 'En línea' : 'Sin señal'}
           </span>

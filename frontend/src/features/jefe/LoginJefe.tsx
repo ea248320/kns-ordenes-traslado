@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { supabase } from '../../lib/supabaseClient'
+import { LOGO_URL } from '../../lib/assets'
 
 interface Props {
   onVolver: () => void
@@ -24,7 +25,7 @@ export default function LoginJefe({ onVolver }: Props) {
   return (
     <div className="pantalla-centrada">
       <form className="tarjeta formulario-login" onSubmit={handleSubmit}>
-        <img src="/logo.png" alt="KNS Transportes" className="logo-login" />
+        <img src={LOGO_URL} alt="KNS Transportes" className="logo-login" />
         <h2>Ingreso Jefe de Transportes</h2>
         <label>
           Correo

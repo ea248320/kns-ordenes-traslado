@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from 'react'
 import { useAuth } from './auth/useAuth'
+import { LOGO_URL } from './lib/assets'
 import LoginChofer from './features/chofer/LoginChofer'
 import ChoferHome from './features/chofer/ChoferHome'
 import LoginJefe from './features/jefe/LoginJefe'
@@ -29,7 +30,7 @@ export default function App() {
   return (
     <div className="pantalla-centrada">
       <div className="tarjeta formulario-login">
-        <img src="/logo.png" alt="KNS Transportes" className="logo-login" />
+        <img src={LOGO_URL} alt="KNS Transportes" className="logo-login" />
         <p className="texto-suave">Órdenes de traslado digitales</p>
         <button type="button" onClick={() => setPantallaLogin('chofer')}>
           Soy Chofer
