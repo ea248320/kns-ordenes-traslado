@@ -34,8 +34,10 @@ export default defineConfig({
           },
         ],
       },
+      // El SW solo en builds de producción: en dev provoca recargas al
+      // regenerarse y entorpece las pruebas.
       devOptions: {
-        enabled: true,
+        enabled: false,
       },
     }),
   ],
