@@ -12,6 +12,7 @@ import {
 import Filtros from './Filtros'
 import TablaTraslados from './TablaTraslados'
 import CatalogoClientes from './clientes/CatalogoClientes'
+import CatalogoFlota from './flota/CatalogoFlota'
 import Dashboard from './dashboard/Dashboard'
 
 interface Props {
@@ -19,7 +20,7 @@ interface Props {
 }
 
 export default function JefeHome({ onLogout }: Props) {
-  const [vista, setVista] = useState<'dashboard' | 'traslados' | 'clientes'>('dashboard')
+  const [vista, setVista] = useState<'dashboard' | 'traslados' | 'clientes' | 'flota'>('dashboard')
   const [filtros, setFiltros] = useState<FiltrosTraslados>(filtrosIniciales)
   const [catalogos, setCatalogos] = useState<Catalogos>({ choferes: [], camiones: [], clientes: [] })
   const [filasActual, setFilasActual] = useState<TrasladoDetalle[]>([])
@@ -58,7 +59,10 @@ export default function JefeHome({ onLogout }: Props) {
   return (
     <div className="contenedor contenedor-ancho">
       <header className="barra-superior">
-        <strong>KNS Transportes · Panel del Jefe</strong>
+        <div>
+          <img src="/logo.png" alt="KNS Transportes" className="logo-barra" />
+          <strong>Panel del Jefe</strong>
+        </div>
         <button type="button" className="boton-secundario" onClick={onLogout}>
           Cerrar sesión
         </button>
@@ -74,9 +78,14 @@ export default function JefeHome({ onLogout }: Props) {
         <button type="button" className={vista === 'clientes' ? 'activa' : ''} onClick={() => setVista('clientes')}>
           Clientes
         </button>
+        <button type="button" className={vista === 'flota' ? 'activa' : ''} onClick={() => setVista('flota')}>
+          Flota
+        </button>
       </nav>
 
-      {vista !== 'clientes' && <Filtros filtros={filtros} onChange={setFiltros} catalogos={catalogos} />}
+      {(vista === 'dashboard' || vista === 'traslados') && (
+        <Filtros filtros={filtros} onChange={setFiltros} catalogos={catalogos} />
+      )}
 
       {error && (
         <p className="mensaje-error">
@@ -98,6 +107,13 @@ export default function JefeHome({ onLogout }: Props) {
       )}
       {vista === 'clientes' && (
         <CatalogoClientes clientes={catalogos.clientes} onRecargar={recargarCatalogos} />
+      )}
+      {vista === 'flota' && (
+        <CatalogoFlota
+          choferes={catalogos.choferes}
+          camiones={catalogos.camiones}
+          onRecargar={recargarCatalogos}
+        />
       )}
     </div>
   )

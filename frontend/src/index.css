@@ -94,6 +94,17 @@ h1, h2, h3, h4 {
   max-width: 360px;
 }
 
+.logo-login {
+  max-width: 220px;
+  align-self: center;
+  margin-bottom: 0.3rem;
+}
+
+.logo-barra {
+  height: 34px;
+  display: block;
+}
+
 label {
   display: flex;
   flex-direction: column;

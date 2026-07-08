@@ -35,7 +35,7 @@ export default function ChoferHome({ sesion, onLogout }: Props) {
     <div className="contenedor">
       <header className="barra-superior">
         <div>
-          <strong>KNS Traslados</strong>
+          <img src="/logo.png" alt="KNS Transportes" className="logo-barra" />
           <span className={online ? 'chip chip-ok' : 'chip chip-pendiente'}>
             {online ? 'En línea' : 'Sin señal'}
           </span>

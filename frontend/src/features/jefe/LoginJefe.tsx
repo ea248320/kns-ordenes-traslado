@@ -24,6 +24,7 @@ export default function LoginJefe({ onVolver }: Props) {
   return (
     <div className="pantalla-centrada">
       <form className="tarjeta formulario-login" onSubmit={handleSubmit}>
+        <img src="/logo.png" alt="KNS Transportes" className="logo-login" />
         <h2>Ingreso Jefe de Transportes</h2>
         <label>
           Correo

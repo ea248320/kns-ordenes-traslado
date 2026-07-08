@@ -29,7 +29,7 @@ export default function App() {
   return (
     <div className="pantalla-centrada">
       <div className="tarjeta formulario-login">
-        <h1>KNS Transportes</h1>
+        <img src="/logo.png" alt="KNS Transportes" className="logo-login" />
         <p className="texto-suave">Órdenes de traslado digitales</p>
         <button type="button" onClick={() => setPantallaLogin('chofer')}>
           Soy Chofer

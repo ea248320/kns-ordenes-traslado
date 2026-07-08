@@ -41,6 +41,7 @@ export default function LoginChofer({ onLogin, onVolver }: Props) {
   return (
     <div className="pantalla-centrada">
       <form className="tarjeta formulario-login" onSubmit={handleSubmit}>
+        <img src="/logo.png" alt="KNS Transportes" className="logo-login" />
         <h2>Ingreso Chofer</h2>
         <label>
           RUT
