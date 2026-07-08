@@ -15,15 +15,21 @@ Functions + RLS) · Recharts.
 - `supabase/functions/` — Edge Functions (Deno).
 - `supabase/seed.sql` — datos de prueba para desarrollo.
 
-## Estado (Fase 1: modelo de datos + login)
+## Estado
 
-- [x] Esquema SQL: `choferes`, `camiones`, `clientes`, `perfiles`, `traslados`,
-      `traslados_auditoria`, correlativo automático, normalización de
-      RUT/patente/cliente, RLS, vistas/funciones de alertas.
-- [x] Edge Function `login-chofer` (RUT + patente → JWT custom).
-- [ ] Formulario offline del chofer (Fase 2).
-- [ ] Vista del jefe: listar/filtrar/editar (Fase 3).
-- [ ] Dashboard de análisis (Fase 4).
+- [x] Fase 1 — Esquema SQL: `choferes`, `camiones`, `clientes`, `perfiles`,
+      `traslados`, `traslados_auditoria`, correlativo automático,
+      normalización de RUT/patente/cliente, RLS, vistas/funciones de alertas.
+      Edge Function `login-chofer` (RUT + patente → JWT custom).
+- [x] Fase 2 — Formulario offline del chofer: cola local en IndexedDB (Dexie),
+      sincronización idempotente por `client_uuid`, historial propio con
+      cache local, PWA instalable.
+- [x] Fase 3 — Panel del jefe: tabla con filtros combinables, edición con
+      historial de auditoría, catálogo de clientes (crear/renombrar/desactivar).
+- [x] Fase 4 — Dashboard: tarjetas resumen con comparación vs período
+      anterior, composición por producto, rankings por camión/chofer/cliente,
+      evolución temporal (día/semana/mes), eficiencia por camión, alertas
+      automáticas, exportación Excel/PDF de la vista filtrada.
 
 ## Puesta en marcha
 
