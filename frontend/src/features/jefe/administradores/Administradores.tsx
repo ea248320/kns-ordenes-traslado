@@ -15,6 +15,8 @@ export default function Administradores() {
   const [error, setError] = useState<string | null>(null)
   const [mensaje, setMensaje] = useState<string | null>(null)
   const [creando, setCreando] = useState(false)
+  const [eliminandoId, setEliminandoId] = useState<string | null>(null)
+  const [miId, setMiId] = useState<string | null>(null)
 
   function recargar() {
     setCargando(true)
@@ -30,6 +32,9 @@ export default function Administradores() {
   }
 
   useEffect(recargar, [])
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setMiId(data.user?.id ?? null))
+  }, [])
 
   async function handleCrear(e: FormEvent) {
     e.preventDefault()
@@ -58,6 +63,31 @@ export default function Administradores() {
       recargar()
     } finally {
       setCreando(false)
+    }
+  }
+
+  async function handleEliminar(perfil: Perfil) {
+    if (!window.confirm(`¿Eliminar el acceso de "${perfil.nombre ?? perfil.email}"? No podrá volver a entrar.`))
+      return
+    setError(null)
+    setMensaje(null)
+    setEliminandoId(perfil.id)
+    try {
+      const { data, error: invokeError } = await supabase.functions.invoke('eliminar-administrador', {
+        body: { id: perfil.id },
+      })
+      if (invokeError) {
+        setError(await extraerMensajeError(invokeError))
+        return
+      }
+      if (data?.error) {
+        setError(data.error)
+        return
+      }
+      setMensaje(`Se eliminó el acceso de "${perfil.nombre ?? perfil.email}".`)
+      recargar()
+    } finally {
+      setEliminandoId(null)
     }
   }
 
@@ -112,6 +142,7 @@ export default function Administradores() {
               <th>Nombre</th>
               <th>Correo</th>
               <th>Desde</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -120,6 +151,20 @@ export default function Administradores() {
                 <td>{p.nombre ?? '—'}</td>
                 <td>{p.email ?? '—'}</td>
                 <td>{new Date(p.creado_en).toLocaleDateString('es-CL')}</td>
+                <td>
+                  {p.id === miId ? (
+                    <span className="texto-suave">(tú)</span>
+                  ) : (
+                    <button
+                      type="button"
+                      className="boton-peligro"
+                      disabled={eliminandoId === p.id}
+                      onClick={() => handleEliminar(p)}
+                    >
+                      {eliminandoId === p.id ? 'Eliminando…' : 'Eliminar'}
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
