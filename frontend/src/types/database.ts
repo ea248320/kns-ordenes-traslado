@@ -78,6 +78,7 @@ export type TrasladoAuditoria = {
 export type Perfil = {
   id: string
   nombre: string | null
+  email: string | null
   rol: 'jefe' | 'admin'
   creado_en: string
 }

@@ -18,7 +18,16 @@ export default function LoginJefe({ onVolver }: Props) {
     setCargando(true)
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
     setCargando(false)
-    if (authError) setError('Correo o contraseña incorrectos')
+    if (authError) {
+      // Se muestra el motivo real (no solo "credenciales inválidas"): esta
+      // pantalla la usa un puñado de administradores internos, no el
+      // público general, así que el detalle ayuda más de lo que expone.
+      setError(
+        authError.message === 'Email not confirmed'
+          ? 'Este usuario aún no confirmó su correo. Pídele al administrador que lo confirme desde Supabase (Authentication → Users → abrir el usuario → Confirm email).'
+          : authError.message,
+      )
+    }
     // Si funciona, onAuthStateChange en useAuth cambia la vista solo.
   }
 

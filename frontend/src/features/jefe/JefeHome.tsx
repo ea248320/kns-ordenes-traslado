@@ -13,6 +13,7 @@ import Filtros from './Filtros'
 import TablaTraslados from './TablaTraslados'
 import CatalogoClientes from './clientes/CatalogoClientes'
 import CatalogoFlota from './flota/CatalogoFlota'
+import Administradores from './administradores/Administradores'
 import Dashboard from './dashboard/Dashboard'
 import { LOGO_URL } from '../../lib/assets'
 
@@ -21,7 +22,9 @@ interface Props {
 }
 
 export default function JefeHome({ onLogout }: Props) {
-  const [vista, setVista] = useState<'dashboard' | 'traslados' | 'clientes' | 'flota'>('dashboard')
+  const [vista, setVista] = useState<'dashboard' | 'traslados' | 'clientes' | 'flota' | 'administradores'>(
+    'dashboard',
+  )
   const [filtros, setFiltros] = useState<FiltrosTraslados>(filtrosIniciales)
   const [catalogos, setCatalogos] = useState<Catalogos>({ choferes: [], camiones: [], clientes: [] })
   const [filasActual, setFilasActual] = useState<TrasladoDetalle[]>([])
@@ -82,6 +85,13 @@ export default function JefeHome({ onLogout }: Props) {
         <button type="button" className={vista === 'flota' ? 'activa' : ''} onClick={() => setVista('flota')}>
           Flota
         </button>
+        <button
+          type="button"
+          className={vista === 'administradores' ? 'activa' : ''}
+          onClick={() => setVista('administradores')}
+        >
+          Administradores
+        </button>
       </nav>
 
       {(vista === 'dashboard' || vista === 'traslados') && (
@@ -116,6 +126,7 @@ export default function JefeHome({ onLogout }: Props) {
           onRecargar={recargarCatalogos}
         />
       )}
+      {vista === 'administradores' && <Administradores />}
     </div>
   )
 }
