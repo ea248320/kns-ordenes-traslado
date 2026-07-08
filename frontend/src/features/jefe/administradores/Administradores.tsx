@@ -12,6 +12,7 @@ export default function Administradores() {
   const [nombre, setNombre] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmarPassword, setConfirmarPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [mensaje, setMensaje] = useState<string | null>(null)
   const [creando, setCreando] = useState(false)
@@ -40,6 +41,12 @@ export default function Administradores() {
     e.preventDefault()
     setError(null)
     setMensaje(null)
+
+    if (password !== confirmarPassword) {
+      setError('Las contraseñas no coinciden.')
+      return
+    }
+
     setCreando(true)
     try {
       const { data, error: invokeError } = await supabase.functions.invoke('crear-administrador', {
@@ -60,6 +67,7 @@ export default function Administradores() {
       setNombre('')
       setEmail('')
       setPassword('')
+      setConfirmarPassword('')
       recargar()
     } finally {
       setCreando(false)
@@ -114,13 +122,24 @@ export default function Administradores() {
             required
           />
         </label>
-        <label style={{ gridColumn: '1 / -1' }}>
+        <label>
           Contraseña inicial
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Mínimo 6 caracteres"
+            minLength={6}
+            required
+          />
+        </label>
+        <label>
+          Confirmar contraseña
+          <input
+            type="password"
+            value={confirmarPassword}
+            onChange={(e) => setConfirmarPassword(e.target.value)}
+            placeholder="Repite la contraseña"
             minLength={6}
             required
           />
