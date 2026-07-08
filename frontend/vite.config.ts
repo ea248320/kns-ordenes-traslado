@@ -13,7 +13,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons/*.png', 'logo.png'],
+      includeAssets: ['favicon.svg', 'icons/*.png', 'logo.jpg'],
       manifest: {
         name: 'KNS Ordenes de Traslado',
         short_name: 'KNS Traslados',
