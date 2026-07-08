@@ -62,7 +62,7 @@ export default function JefeHome({ onLogout }: Props) {
       <header className="barra-superior">
         <div>
           <img src={LOGO_URL} alt="KNS Transportes" className="logo-barra" />
-          <strong>Panel del Jefe</strong>
+          <strong>Panel del Administrador</strong>
         </div>
         <button type="button" className="boton-secundario" onClick={onLogout}>
           Cerrar sesión

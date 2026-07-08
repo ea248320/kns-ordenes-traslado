@@ -36,7 +36,7 @@ export default function App() {
           Soy Chofer
         </button>
         <button type="button" className="boton-secundario" onClick={() => setPantallaLogin('jefe')}>
-          Soy Jefe de Transportes
+          Soy Administrador
         </button>
       </div>
     </div>

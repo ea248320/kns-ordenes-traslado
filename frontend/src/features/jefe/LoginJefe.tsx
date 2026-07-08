@@ -26,7 +26,7 @@ export default function LoginJefe({ onVolver }: Props) {
     <div className="pantalla-centrada">
       <form className="tarjeta formulario-login" onSubmit={handleSubmit}>
         <img src={LOGO_URL} alt="KNS Transportes" className="logo-login" />
-        <h2>Ingreso Jefe de Transportes</h2>
+        <h2>Ingreso Administrador</h2>
         <label>
           Correo
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
