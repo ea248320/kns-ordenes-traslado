@@ -1,0 +1,8 @@
+project_id = "ftaaxwdmunghvmyciolz"
+
+# El chofer llama a este endpoint SIN sesión previa (es el login mismo), así
+# que no puede exigirse un JWT válido de entrada. Si despliegas desde el
+# Dashboard en vez de la CLI, desactiva manualmente "Enforce JWT Verification"
+# para esta función en Project Settings > Edge Functions > login-chofer.
+[functions.login-chofer]
+verify_jwt = false

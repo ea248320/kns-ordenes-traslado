@@ -1,0 +1,6 @@
+.DS_Store
+*.local
+
+# Supabase CLI (si se linkea el proyecto localmente)
+supabase/.branches
+supabase/.temp
