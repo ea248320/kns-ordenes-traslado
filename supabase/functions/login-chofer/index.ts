@@ -88,9 +88,11 @@ Deno.serve(async (req) => {
   if (!chofer || !chofer.activo) return jsonResponse({ error: 'RUT no registrado o inactivo' }, 401)
   if (!camion || !camion.activo) return jsonResponse({ error: 'Patente no registrada o inactiva' }, 401)
 
-  const jwtSecret = Deno.env.get('SUPABASE_JWT_SECRET')
+  // Nota: no puede llamarse SUPABASE_JWT_SECRET porque Supabase reserva el
+  // prefijo SUPABASE_ para sus propios secrets.
+  const jwtSecret = Deno.env.get('JWT_SECRET')
   if (!jwtSecret) {
-    console.error('Falta el secret SUPABASE_JWT_SECRET en esta función')
+    console.error('Falta el secret JWT_SECRET en esta función')
     return jsonResponse({ error: 'Configuración del servidor incompleta' }, 500)
   }
 

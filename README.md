@@ -56,13 +56,14 @@ Con CLI:
 
 ```bash
 supabase functions deploy login-chofer --no-verify-jwt
-supabase secrets set SUPABASE_JWT_SECRET=<el-jwt-secret-del-proyecto>
+supabase secrets set JWT_SECRET=<el-jwt-secret-del-proyecto>
 ```
 
 Sin CLI: crea la función desde el Dashboard (Edge Functions → New function →
 pega el contenido de `supabase/functions/login-chofer/index.ts`), desactiva
-"Enforce JWT Verification" para esa función, y agrega el secret
-`SUPABASE_JWT_SECRET` en Edge Functions → Secrets.
+"Verify JWT with legacy secret" para esa función, y agrega el secret
+`JWT_SECRET` en Edge Functions → Secrets (el nombre no puede empezar con
+`SUPABASE_`, prefijo reservado por Supabase).
 
 ### 3. Frontend
 
