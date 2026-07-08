@@ -153,6 +153,12 @@ button:disabled {
   border: 1px solid var(--borde);
 }
 
+.boton-peligro {
+  background: #fff;
+  color: var(--alerta);
+  border: 1px solid #fecaca;
+}
+
 .grilla-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;

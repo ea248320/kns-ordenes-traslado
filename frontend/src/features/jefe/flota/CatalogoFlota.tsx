@@ -20,11 +20,20 @@ export default function CatalogoFlota({ choferes, camiones, onRecargar }: Props)
   )
 }
 
+/** Traduce errores de Postgres a mensajes útiles para el jefe. */
+function mensajeError(codigo: string | undefined, mensaje: string, entidad: string): string {
+  if (codigo === '23505') return `Ya existe un ${entidad} con ese dato.`
+  if (codigo === '23503')
+    return `No se puede eliminar: este ${entidad} tiene traslados registrados. Usa "Desactivar" para bloquearlo sin perder el historial.`
+  return mensaje
+}
+
 function TarjetaChoferes({ choferes, onRecargar }: { choferes: Chofer[]; onRecargar: () => void }) {
   const [nombre, setNombre] = useState('')
   const [rut, setRut] = useState('')
   const [editando, setEditando] = useState<Chofer | null>(null)
   const [nombreEditado, setNombreEditado] = useState('')
+  const [rutEditado, setRutEditado] = useState('')
   const [error, setError] = useState<string | null>(null)
 
   async function handleCrear(e: FormEvent) {
@@ -34,7 +43,7 @@ function TarjetaChoferes({ choferes, onRecargar }: { choferes: Chofer[]; onRecar
       .from('choferes')
       .insert({ nombre: nombre.trim(), rut: rut.trim() })
     if (insError) {
-      setError(insError.code === '23505' ? 'Ya existe un chofer con ese RUT.' : insError.message)
+      setError(mensajeError(insError.code, insError.message, 'chofer'))
       return
     }
     setNombre('')
@@ -42,16 +51,16 @@ function TarjetaChoferes({ choferes, onRecargar }: { choferes: Chofer[]; onRecar
     onRecargar()
   }
 
-  async function handleRenombrar(e: FormEvent) {
+  async function handleGuardarEdicion(e: FormEvent) {
     e.preventDefault()
     if (!editando) return
     setError(null)
     const { error: updError } = await supabase
       .from('choferes')
-      .update({ nombre: nombreEditado.trim() })
+      .update({ nombre: nombreEditado.trim(), rut: rutEditado.trim() })
       .eq('id', editando.id)
     if (updError) {
-      setError(updError.message)
+      setError(mensajeError(updError.code, updError.message, 'chofer'))
       return
     }
     setEditando(null)
@@ -65,6 +74,18 @@ function TarjetaChoferes({ choferes, onRecargar }: { choferes: Chofer[]; onRecar
     const { error: updError } = await supabase.from('choferes').update({ activo }).eq('id', chofer.id)
     if (updError) {
       setError(updError.message)
+      return
+    }
+    onRecargar()
+  }
+
+  async function handleEliminar(chofer: Chofer) {
+    if (!window.confirm(`¿Eliminar definitivamente a ${chofer.nombre}? Esta acción no se puede deshacer.`))
+      return
+    setError(null)
+    const { error: delError } = await supabase.from('choferes').delete().eq('id', chofer.id)
+    if (delError) {
+      setError(mensajeError(delError.code, delError.message, 'chofer'))
       return
     }
     onRecargar()
@@ -106,40 +127,58 @@ function TarjetaChoferes({ choferes, onRecargar }: { choferes: Chofer[]; onRecar
         <tbody>
           {choferes.map((c) => (
             <tr key={c.id}>
-              <td>
-                {editando?.id === c.id ? (
-                  <form onSubmit={handleRenombrar} className="fila-botones">
-                    <input value={nombreEditado} onChange={(e) => setNombreEditado(e.target.value)} autoFocus />
-                    <button type="submit">OK</button>
+              {editando?.id === c.id ? (
+                <td colSpan={4}>
+                  <form onSubmit={handleGuardarEdicion} className="fila-botones">
+                    <input
+                      value={nombreEditado}
+                      onChange={(e) => setNombreEditado(e.target.value)}
+                      placeholder="Nombre"
+                      autoFocus
+                      required
+                    />
+                    <input
+                      value={rutEditado}
+                      onChange={(e) => setRutEditado(e.target.value)}
+                      placeholder="RUT"
+                      required
+                    />
+                    <button type="submit">Guardar</button>
                     <button type="button" className="boton-secundario" onClick={() => setEditando(null)}>
-                      ✕
+                      Cancelar
                     </button>
                   </form>
-                ) : (
-                  c.nombre
-                )}
-              </td>
-              <td>{formatearRut(c.rut)}</td>
-              <td>
-                <span className={c.activo ? 'chip chip-ok' : 'chip chip-pendiente'}>
-                  {c.activo ? 'Activo' : 'Inactivo'}
-                </span>
-              </td>
-              <td className="fila-botones">
-                <button
-                  type="button"
-                  className="boton-secundario"
-                  onClick={() => {
-                    setEditando(c)
-                    setNombreEditado(c.nombre)
-                  }}
-                >
-                  Renombrar
-                </button>
-                <button type="button" className="boton-secundario" onClick={() => handleActivar(c, !c.activo)}>
-                  {c.activo ? 'Desactivar' : 'Reactivar'}
-                </button>
-              </td>
+                </td>
+              ) : (
+                <>
+                  <td>{c.nombre}</td>
+                  <td>{formatearRut(c.rut)}</td>
+                  <td>
+                    <span className={c.activo ? 'chip chip-ok' : 'chip chip-pendiente'}>
+                      {c.activo ? 'Activo' : 'Inactivo'}
+                    </span>
+                  </td>
+                  <td className="fila-botones">
+                    <button
+                      type="button"
+                      className="boton-secundario"
+                      onClick={() => {
+                        setEditando(c)
+                        setNombreEditado(c.nombre)
+                        setRutEditado(formatearRut(c.rut))
+                      }}
+                    >
+                      Editar
+                    </button>
+                    <button type="button" className="boton-secundario" onClick={() => handleActivar(c, !c.activo)}>
+                      {c.activo ? 'Desactivar' : 'Reactivar'}
+                    </button>
+                    <button type="button" className="boton-peligro" onClick={() => handleEliminar(c)}>
+                      Eliminar
+                    </button>
+                  </td>
+                </>
+              )}
             </tr>
           ))}
           {choferes.length === 0 && (
@@ -157,6 +196,8 @@ function TarjetaChoferes({ choferes, onRecargar }: { choferes: Chofer[]; onRecar
 
 function TarjetaCamiones({ camiones, onRecargar }: { camiones: Camion[]; onRecargar: () => void }) {
   const [patente, setPatente] = useState('')
+  const [editando, setEditando] = useState<Camion | null>(null)
+  const [patenteEditada, setPatenteEditada] = useState('')
   const [error, setError] = useState<string | null>(null)
 
   async function handleCrear(e: FormEvent) {
@@ -164,10 +205,26 @@ function TarjetaCamiones({ camiones, onRecargar }: { camiones: Camion[]; onRecar
     setError(null)
     const { error: insError } = await supabase.from('camiones').insert({ patente: patente.trim() })
     if (insError) {
-      setError(insError.code === '23505' ? 'Esa patente ya está registrada.' : insError.message)
+      setError(mensajeError(insError.code, insError.message, 'camión'))
       return
     }
     setPatente('')
+    onRecargar()
+  }
+
+  async function handleGuardarEdicion(e: FormEvent) {
+    e.preventDefault()
+    if (!editando) return
+    setError(null)
+    const { error: updError } = await supabase
+      .from('camiones')
+      .update({ patente: patenteEditada.trim() })
+      .eq('id', editando.id)
+    if (updError) {
+      setError(mensajeError(updError.code, updError.message, 'camión'))
+      return
+    }
+    setEditando(null)
     onRecargar()
   }
 
@@ -176,6 +233,17 @@ function TarjetaCamiones({ camiones, onRecargar }: { camiones: Camion[]; onRecar
     const { error: updError } = await supabase.from('camiones').update({ activo }).eq('id', camion.id)
     if (updError) {
       setError(updError.message)
+      return
+    }
+    onRecargar()
+  }
+
+  async function handleEliminar(camion: Camion) {
+    if (!window.confirm(`¿Eliminar definitivamente el camión ${camion.patente}?`)) return
+    setError(null)
+    const { error: delError } = await supabase.from('camiones').delete().eq('id', camion.id)
+    if (delError) {
+      setError(mensajeError(delError.code, delError.message, 'camión'))
       return
     }
     onRecargar()
@@ -212,17 +280,49 @@ function TarjetaCamiones({ camiones, onRecargar }: { camiones: Camion[]; onRecar
         <tbody>
           {camiones.map((c) => (
             <tr key={c.id}>
-              <td>{c.patente}</td>
-              <td>
-                <span className={c.activo ? 'chip chip-ok' : 'chip chip-pendiente'}>
-                  {c.activo ? 'Activo' : 'Inactivo'}
-                </span>
-              </td>
-              <td className="fila-botones">
-                <button type="button" className="boton-secundario" onClick={() => handleActivar(c, !c.activo)}>
-                  {c.activo ? 'Desactivar' : 'Reactivar'}
-                </button>
-              </td>
+              {editando?.id === c.id ? (
+                <td colSpan={3}>
+                  <form onSubmit={handleGuardarEdicion} className="fila-botones">
+                    <input
+                      value={patenteEditada}
+                      onChange={(e) => setPatenteEditada(e.target.value)}
+                      autoFocus
+                      required
+                    />
+                    <button type="submit">Guardar</button>
+                    <button type="button" className="boton-secundario" onClick={() => setEditando(null)}>
+                      Cancelar
+                    </button>
+                  </form>
+                </td>
+              ) : (
+                <>
+                  <td>{c.patente}</td>
+                  <td>
+                    <span className={c.activo ? 'chip chip-ok' : 'chip chip-pendiente'}>
+                      {c.activo ? 'Activo' : 'Inactivo'}
+                    </span>
+                  </td>
+                  <td className="fila-botones">
+                    <button
+                      type="button"
+                      className="boton-secundario"
+                      onClick={() => {
+                        setEditando(c)
+                        setPatenteEditada(c.patente)
+                      }}
+                    >
+                      Editar
+                    </button>
+                    <button type="button" className="boton-secundario" onClick={() => handleActivar(c, !c.activo)}>
+                      {c.activo ? 'Desactivar' : 'Reactivar'}
+                    </button>
+                    <button type="button" className="boton-peligro" onClick={() => handleEliminar(c)}>
+                      Eliminar
+                    </button>
+                  </td>
+                </>
+              )}
             </tr>
           ))}
           {camiones.length === 0 && (

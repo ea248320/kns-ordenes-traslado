@@ -35,6 +35,23 @@ const CAMPOS_EDITABLES = [
 export default function TablaTraslados({ filas, catalogos, onRecargar }: Props) {
   const [editando, setEditando] = useState<TrasladoDetalle | null>(null)
   const [auditoriaDe, setAuditoriaDe] = useState<TrasladoDetalle | null>(null)
+  const [errorEliminar, setErrorEliminar] = useState<string | null>(null)
+
+  async function handleEliminar(t: TrasladoDetalle) {
+    if (
+      !window.confirm(
+        `¿Eliminar la orden #${t.numero_orden} (${t.fecha}, guía ${t.numero_guia})? Esta acción no se puede deshacer.`,
+      )
+    )
+      return
+    setErrorEliminar(null)
+    const { error } = await supabase.from('traslados').delete().eq('id', t.id)
+    if (error) {
+      setErrorEliminar(error.message)
+      return
+    }
+    onRecargar()
+  }
 
   return (
     <div className="tarjeta">
@@ -49,6 +66,8 @@ export default function TablaTraslados({ filas, catalogos, onRecargar }: Props) 
           </button>
         </div>
       </div>
+
+      {errorEliminar && <p className="mensaje-error">{errorEliminar}</p>}
 
       <div className="tabla-scroll">
         <table>
@@ -86,6 +105,9 @@ export default function TablaTraslados({ filas, catalogos, onRecargar }: Props) 
                   </button>
                   <button type="button" className="boton-secundario" onClick={() => setAuditoriaDe(t)}>
                     Historial
+                  </button>
+                  <button type="button" className="boton-peligro" onClick={() => handleEliminar(t)}>
+                    Eliminar
                   </button>
                 </td>
               </tr>

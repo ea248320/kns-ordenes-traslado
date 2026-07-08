@@ -59,6 +59,21 @@ export default function CatalogoClientes({ clientes, onRecargar }: Props) {
     onRecargar()
   }
 
+  async function handleEliminar(cliente: Cliente) {
+    if (!window.confirm(`¿Eliminar definitivamente a "${cliente.nombre}"?`)) return
+    setError(null)
+    const { error: delError } = await supabase.from('clientes').delete().eq('id', cliente.id)
+    if (delError) {
+      setError(
+        delError.code === '23503'
+          ? 'No se puede eliminar: este cliente tiene traslados registrados. Usa "Desactivar" para sacarlo del formulario sin perder el historial.'
+          : delError.message,
+      )
+      return
+    }
+    onRecargar()
+  }
+
   return (
     <div className="tarjeta">
       <h3>Catálogo de clientes</h3>
@@ -121,6 +136,9 @@ export default function CatalogoClientes({ clientes, onRecargar }: Props) {
                 </button>
                 <button type="button" className="boton-secundario" onClick={() => handleActivar(c, !c.activo)}>
                   {c.activo ? 'Desactivar' : 'Reactivar'}
+                </button>
+                <button type="button" className="boton-peligro" onClick={() => handleEliminar(c)}>
+                  Eliminar
                 </button>
               </td>
             </tr>
