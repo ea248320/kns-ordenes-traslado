@@ -46,7 +46,7 @@ export default function Alertas() {
       for (const fila of invalidos.data ?? []) {
         encontradas.push({
           tipo: 'Kg/Km inválidos',
-          detalle: `Orden #${fila.numero_orden} (${fila.fecha}): kg neto ${fila.kg_neto}, km ${fila.km_recorrido}`,
+          detalle: `Orden #${fila.numero_orden} (${fila.fecha}): kg promedio ${fila.kg_neto}, km ${fila.km_recorrido}`,
         })
       }
 

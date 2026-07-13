@@ -65,7 +65,7 @@ export default function HistorialChofer({ sesion }: Props) {
                   <span className="chip chip-pendiente">Pendiente</span>
                 </div>
                 <span className="texto-suave">
-                  {v.cliente_nombre} · {v.camion_patente} · {v.kg_final - v.kg_inicial} kg ·{' '}
+                  {v.cliente_nombre} · {v.camion_patente} · {(v.kg_inicial + v.kg_final) / 2} kg ·{' '}
                   {v.km_final - v.km_inicial} km
                 </span>
                 {v.ultimo_error && <span className="mensaje-error">Error: {v.ultimo_error}</span>}
@@ -90,7 +90,7 @@ export default function HistorialChofer({ sesion }: Props) {
             </div>
             <span className="texto-suave">
               {v.cliente_nombre} · {v.camion_patente} · guía {v.numero_guia} ·{' '}
-              {v.kg_final - v.kg_inicial} kg · {v.km_final - v.km_inicial} km
+              {(v.kg_inicial + v.kg_final) / 2} kg · {v.km_final - v.km_inicial} km
             </span>
           </li>
         ))}

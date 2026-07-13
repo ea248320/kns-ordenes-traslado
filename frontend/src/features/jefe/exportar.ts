@@ -16,7 +16,7 @@ const COLUMNAS = [
   { header: 'Dir. final', key: 'direccion_final' },
   { header: 'Kg inicial', key: 'kg_inicial' },
   { header: 'Kg final', key: 'kg_final' },
-  { header: 'Kg neto', key: 'kg_neto' },
+  { header: 'Kg promedio', key: 'kg_neto' },
   { header: 'Km inicial', key: 'km_inicial' },
   { header: 'Km final', key: 'km_final' },
   { header: 'Km recorrido', key: 'km_recorrido' },
@@ -58,7 +58,7 @@ export async function exportarTrasladosPdf(filas: TrasladoDetalle[]): Promise<vo
 
   autoTable(doc, {
     startY: 26,
-    head: [['N°', 'Fecha', 'Chofer', 'Camión', 'Cliente', 'Producto', 'Guía', 'Kg neto', 'Km']],
+    head: [['N°', 'Fecha', 'Chofer', 'Camión', 'Cliente', 'Producto', 'Guía', 'Kg promedio', 'Km']],
     body: filas.map((t) => [
       t.numero_orden ?? '',
       t.fecha,
